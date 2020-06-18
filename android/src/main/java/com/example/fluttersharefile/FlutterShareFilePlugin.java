@@ -87,6 +87,9 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
     stickerIntent.setType("image/png");
     stickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
+    instance.activity().grantUriPermission(
+            "com.instagram.android", contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
 
     Intent openInChooser = Intent.createChooser(stickerIntent, "Share in...");
 
