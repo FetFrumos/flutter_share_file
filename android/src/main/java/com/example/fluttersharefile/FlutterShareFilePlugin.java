@@ -90,6 +90,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
     forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
     Intent[] extraIntents = new Intent[resInfo.size()];
+    Log.d("MIODEBUG", "activitys: " + resInfo.size());
     for (int i = 0; i < resInfo.size(); i++) {
       // Extract the label, append it, and repackage it in a LabeledIntent
       ResolveInfo ri = resInfo.get(i);
