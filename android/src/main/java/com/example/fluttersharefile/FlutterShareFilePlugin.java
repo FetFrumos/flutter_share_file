@@ -44,7 +44,9 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
 
   private void shareFile(String fileName, String message) {
     File imageFile = new File(instance.activeContext().getCacheDir(), fileName);
-    Uri contentUri = FileProvider.getUriForFile(instance.activeContext(), "com.example.fluttersharefile", imageFile);
+    String packageName = instance.activeContext().getPackageName();
+    Uri contentUri = FileProvider.getUriForFile(instance.activeContext(), packageName, imageFile);
+    Log.d("MIODEBUG", packageName);
     Log.d("MIODEBUG", contentUri.toString());
     Intent shareIntent = new Intent(Intent.ACTION_SEND);
     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
