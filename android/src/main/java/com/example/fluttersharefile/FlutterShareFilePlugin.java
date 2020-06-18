@@ -30,6 +30,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 
 /**
  * FlutterShareFilePlugin
@@ -100,7 +101,8 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
         Intent openInChooser = Intent.createChooser(imageIntent, "Share in...");
 
         Spannable forEditing = new SpannableString(" (as sticker)");
-        forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int color = ResourcesCompat.getColor(instance.activeContext().getResources(), R.color.dark_red, null);
+        forEditing.setSpan(new ForegroundColorSpan(color), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
         Intent[] extraIntents = new Intent[resInfo.size()];
         Log.d("MIODEBUG", "activitys: " + resInfo.size());
