@@ -103,10 +103,6 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
         forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
         Intent[] extraIntents = new Intent[resInfo.size()];
-        ChooserTarget[] targets = new ChooserTarget[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            targets = ChooserTarget.CREATOR.newArray(resInfo.size());
-        }
         Log.d("MIODEBUG", "activitys: " + resInfo.size());
         for (int i = 0; i < resInfo.size(); i++) {
             // Extract the label, append it, and repackage it in a LabeledIntent
@@ -122,14 +118,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
             intent.setType("image/png");
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                targets[i] = new ChooserTarget(label, Icon.createWithResource(instance.activeContext(), ri.getIconResource()), 1f, component, intent.getExtras());
-            }
             extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, targets);
         }
         openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
         instance.activity().startActivity(openInChooser);
