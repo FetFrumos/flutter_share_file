@@ -82,36 +82,40 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
     Intent stickerIntent = new Intent("com.instagram.share.ADD_TO_STORY");
     stickerIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
     stickerIntent.putExtra("interactive_asset_uri", contentUri);
+    stickerIntent.putExtra("top_background_color", "#E5E5E5");
+    stickerIntent.putExtra("bottom_background_color", "#E5E5E5");
     stickerIntent.setType("image/png");
     stickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
-    Intent openInChooser = Intent.createChooser(imageIntent, "Share in...");
+    Intent openInChooser = Intent.createChooser(stickerIntent, "Share in...");
 
-    Spannable forEditing = new SpannableString(" (as sticker)");
-    forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
-    Intent[] extraIntents = new Intent[resInfo.size()];
-    Log.d("MIODEBUG", "activitys: " + resInfo.size());
-    for (int i = 0; i < resInfo.size(); i++) {
-      // Extract the label, append it, and repackage it in a LabeledIntent
-      ResolveInfo ri = resInfo.get(i);
-      String packageName = ri.activityInfo.packageName;
-      Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
-      intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
-      intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-      intent.putExtra("interactive_asset_uri", contentUri);
-      intent.setType("image/png");
-      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
-      extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, extraIntents);
-    } else  {
-      openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
-    }
+//    Spannable forEditing = new SpannableString(" (as sticker)");
+//    forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//    List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
+//    Intent[] extraIntents = new Intent[resInfo.size()];
+//    Log.d("MIODEBUG", "activitys: " + resInfo.size());
+//    for (int i = 0; i < resInfo.size(); i++) {
+//      // Extract the label, append it, and repackage it in a LabeledIntent
+//      ResolveInfo ri = resInfo.get(i);
+//      String packageName = ri.activityInfo.packageName;
+//      Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
+//      intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
+//      intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+//      intent.putExtra("interactive_asset_uri", contentUri);
+//      intent.putExtra("top_background_color", "#E5E5E5");
+//      intent.putExtra("bottom_background_color", "#E5E5E5");
+//      intent.setType("image/png");
+//      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//      CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
+//      extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
+//    }
+//
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//      openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, extraIntents);
+//    } else  {
+//      openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+//    }
     instance.activity().startActivity(openInChooser);
 }
 }
