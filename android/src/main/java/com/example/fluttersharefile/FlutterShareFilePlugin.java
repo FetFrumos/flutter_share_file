@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -82,6 +83,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
     stickerIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
     stickerIntent.putExtra("interactive_asset_uri", contentUri);
     stickerIntent.setType("image/png");
+    stickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
     Intent openInChooser = Intent.createChooser(imageIntent, "Share in...");
@@ -100,11 +102,16 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
       intent.putExtra(Intent.EXTRA_STREAM, contentUri);
       intent.putExtra("interactive_asset_uri", contentUri);
       intent.setType("image/png");
+      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
       extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
     }
 
-    openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, extraIntents);
+    } else  {
+      openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+    }
     instance.activity().startActivity(openInChooser);
 }
 }
