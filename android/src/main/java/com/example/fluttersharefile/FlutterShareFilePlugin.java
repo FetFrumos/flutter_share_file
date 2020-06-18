@@ -96,6 +96,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
       ResolveInfo ri = resInfo.get(i);
       String packageName = ri.activityInfo.packageName;
       Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
+      intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
       intent.putExtra(Intent.EXTRA_STREAM, contentUri);
       intent.putExtra("interactive_asset_uri", contentUri);
       intent.setType("image/png");
