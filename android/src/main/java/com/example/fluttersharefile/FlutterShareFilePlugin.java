@@ -80,7 +80,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
 
     Intent stickerIntent = new Intent("com.instagram.share.ADD_TO_STORY");
     stickerIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-    stickerIntent.putExtra("content_url", contentUri);
+    stickerIntent.putExtra("interactive_asset_uri", contentUri);
     stickerIntent.setType("image/png");
 
 
