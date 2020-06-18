@@ -130,9 +130,8 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, targets);
-        } else {
-            openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
         }
+        openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
         instance.activity().startActivity(openInChooser);
     }
 }
