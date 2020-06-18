@@ -3,6 +3,7 @@ package com.example.fluttersharefile;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.io.File;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
   private void shareFile(String fileName, String message) {
     File imageFile = new File(instance.activeContext().getCacheDir(), fileName);
     Uri contentUri = FileProvider.getUriForFile(instance.activeContext(), "com.example.fluttersharefile", imageFile);
+    Log.d("MIODEBUG", contentUri.toString());
     Intent shareIntent = new Intent(Intent.ACTION_SEND);
     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     shareIntent.setDataAndType(contentUri, "image/png");
