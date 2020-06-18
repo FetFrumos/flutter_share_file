@@ -49,6 +49,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
     Log.d("MIODEBUG", packageName);
     Log.d("MIODEBUG", contentUri.toString());
     Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     shareIntent.setDataAndType(contentUri, "image/png");
     instance.activity().startActivity(Intent.createChooser(shareIntent, "Share image using"));
