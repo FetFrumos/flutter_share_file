@@ -6,9 +6,11 @@ import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.chooser.ChooserTarget;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -29,34 +31,38 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import androidx.core.content.FileProvider;
 
-/** FlutterShareFilePlugin */
+/**
+ * FlutterShareFilePlugin
+ */
 public class FlutterShareFilePlugin extends FlutterActivity implements MethodCallHandler {
-  /** Plugin registration. */
-  private static Registrar instance;
+    /**
+     * Plugin registration.
+     */
+    private static Registrar instance;
 
-  public static void registerWith(Registrar registrar) {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_share_file");
-    channel.setMethodCallHandler(new FlutterShareFilePlugin());
-    instance = registrar;
-  }
-
-  @Override
-  public void onMethodCall(MethodCall call, Result result) {
-    if (call.method.equals("shareimage")) {
-      Object arguments = call.arguments;
-      HashMap<String, String> argsMap = (HashMap<String, String>) arguments;
-      String fileName = argsMap.get("fileName");
-      String message = argsMap.get("message");
-      shareFile(fileName, message);
-    } else {
-      result.notImplemented();
+    public static void registerWith(Registrar registrar) {
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_share_file");
+        channel.setMethodCallHandler(new FlutterShareFilePlugin());
+        instance = registrar;
     }
-  }
 
-  private void shareFile(String fileName, String message) {
-    File imageFile = new File(instance.activeContext().getCacheDir(), fileName);
-    String appPackageName = instance.activeContext().getPackageName();
-    Uri contentUri = FileProvider.getUriForFile(instance.activeContext(), appPackageName, imageFile);
+    @Override
+    public void onMethodCall(MethodCall call, Result result) {
+        if (call.method.equals("shareimage")) {
+            Object arguments = call.arguments;
+            HashMap<String, String> argsMap = (HashMap<String, String>) arguments;
+            String fileName = argsMap.get("fileName");
+            String message = argsMap.get("message");
+            shareFile(fileName, message);
+        } else {
+            result.notImplemented();
+        }
+    }
+
+    private void shareFile(String fileName, String message) {
+        File imageFile = new File(instance.activeContext().getCacheDir(), fileName);
+        String appPackageName = instance.activeContext().getPackageName();
+        Uri contentUri = FileProvider.getUriForFile(instance.activeContext(), appPackageName, imageFile);
 //    Intent shareIntent = new Intent(Intent.ACTION_SEND);
 //    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
 //    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -73,52 +79,60 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
 //
 //    instance.activity().startActivity(chooser);
 
-    PackageManager pm = instance.activeContext().getPackageManager();
-    Intent imageIntent = new Intent(Intent.ACTION_SEND);
-    imageIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-    imageIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    imageIntent.setDataAndType(contentUri, "image/png");
+        PackageManager pm = instance.activeContext().getPackageManager();
+        Intent imageIntent = new Intent(Intent.ACTION_SEND);
+        imageIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        imageIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        imageIntent.setDataAndType(contentUri, "image/png");
 
-    Intent stickerIntent = new Intent("com.instagram.share.ADD_TO_STORY");
-    stickerIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-    stickerIntent.putExtra("interactive_asset_uri", contentUri);
-    stickerIntent.putExtra("top_background_color", "#E5E5E5");
-    stickerIntent.putExtra("bottom_background_color", "#E5E5E5");
-    stickerIntent.setType("image/png");
-    stickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent stickerIntent = new Intent("com.instagram.share.ADD_TO_STORY");
+        stickerIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        stickerIntent.putExtra("interactive_asset_uri", contentUri);
+        stickerIntent.putExtra("top_background_color", "#E5E5E5");
+        stickerIntent.putExtra("bottom_background_color", "#E5E5E5");
+        stickerIntent.setType("image/png");
+        stickerIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-    instance.activity().grantUriPermission(
-            "com.instagram.android", contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        instance.activity().grantUriPermission(
+                "com.instagram.android", contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
-    Intent openInChooser = Intent.createChooser(stickerIntent, "Share in...");
+        Intent openInChooser = Intent.createChooser(imageIntent, "Share in...");
 
-//    Spannable forEditing = new SpannableString(" (as sticker)");
-//    forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//    List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
-//    Intent[] extraIntents = new Intent[resInfo.size()];
-//    Log.d("MIODEBUG", "activitys: " + resInfo.size());
-//    for (int i = 0; i < resInfo.size(); i++) {
-//      // Extract the label, append it, and repackage it in a LabeledIntent
-//      ResolveInfo ri = resInfo.get(i);
-//      String packageName = ri.activityInfo.packageName;
-//      Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
-//      intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
-//      intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-//      intent.putExtra("interactive_asset_uri", contentUri);
-//      intent.putExtra("top_background_color", "#E5E5E5");
-//      intent.putExtra("bottom_background_color", "#E5E5E5");
-//      intent.setType("image/png");
-//      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//      CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
-//      extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
-//    }
-//
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//      openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, extraIntents);
-//    } else  {
-//      openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
-//    }
-    instance.activity().startActivity(openInChooser);
-}
+        Spannable forEditing = new SpannableString(" (as sticker)");
+        forEditing.setSpan(new ForegroundColorSpan(Color.CYAN), 0, forEditing.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        List<ResolveInfo> resInfo = pm.queryIntentActivities(stickerIntent, 0);
+        Intent[] extraIntents = new Intent[resInfo.size()];
+        ChooserTarget[] targets = new ChooserTarget[0];
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            targets = ChooserTarget.CREATOR.newArray(resInfo.size());
+        }
+        Log.d("MIODEBUG", "activitys: " + resInfo.size());
+        for (int i = 0; i < resInfo.size(); i++) {
+            // Extract the label, append it, and repackage it in a LabeledIntent
+            ResolveInfo ri = resInfo.get(i);
+            String packageName = ri.activityInfo.packageName;
+            Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
+            ComponentName component = new ComponentName(packageName, ri.activityInfo.name);
+            intent.setComponent(component);
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            intent.putExtra("interactive_asset_uri", contentUri);
+            intent.putExtra("top_background_color", "#E5E5E5");
+            intent.putExtra("bottom_background_color", "#E5E5E5");
+            intent.setType("image/png");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                targets[i] = new ChooserTarget(label, Icon.createWithResource(instance.activeContext(), ri.getIconResource()), 1f, component, intent.getExtras());
+            }
+            extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            openInChooser.putExtra(Intent.EXTRA_CHOOSER_TARGETS, extraIntents);
+        } else {
+            openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+        }
+        instance.activity().startActivity(openInChooser);
+    }
 }
