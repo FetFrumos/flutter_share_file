@@ -104,7 +104,7 @@ public class FlutterShareFilePlugin extends FlutterActivity implements MethodCal
             intent.putExtra("bottom_background_color", "#E5E5E5");
             intent.setType("image/png");
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            CharSequence label = TextUtils.concat(ri.loadLabel(pm), forEditing);
+            CharSequence label = TextUtils.concat("Stories", forEditing);
             extraIntents[i] = new LabeledIntent(intent, packageName, label, ri.icon);
         }
         openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
