@@ -44,7 +44,7 @@
             result(nil);
         } else if ([shareType isEqualToString:@"image"]) {
             UIImage *image = [UIImage imageWithContentsOfFile:shareText];
-            [self share:@[image, message]
+            [self share:@[image]
          withController:[UIApplication sharedApplication].keyWindow.rootViewController
                atSource:originRect];
         }
