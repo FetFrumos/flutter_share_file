@@ -44,7 +44,7 @@
             result(nil);
         } else if ([shareType isEqualToString:@"image"]) {
             UIImage *image = [UIImage imageWithContentsOfFile:shareText];
-            NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.backgroundImage" : UIImagePNGRepresentation([UIImage imageNamed:image])}];
+            NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.backgroundImage" : UIImagePNGRepresentation(image)}];
             [self share:@[image, pasteboardItems]
          withController:[UIApplication sharedApplication].keyWindow.rootViewController
                atSource:originRect];
